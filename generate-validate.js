@@ -4,23 +4,21 @@ const jsonschema = require('jsonschema');
 // Load your predefined schema
 const schema = require('./schema.json'); 
 
-// Load discussion data from the GitHub Actions context
-const eventPath = process.argv[2];
-const discussionPayload = require(eventPath);
+// Simulate discussion creation event payload (replace this with your actual GitHub event payload)
+const discussionPayload = require(process.argv[2]);
 
-// Debug: Print the event payload
-console.log('Event Payload:', discussionPayload);
-
-// Extract discussion data from the payload
-const discussionTitle = discussionPayload.discussion.title;
-const discussionBody = discussionPayload.discussion.body;
-const discussionLabels = discussionPayload.discussion.labels ? discussionPayload.discussion.labels.map(label => label.name) : [];
+// Extract relevant information from the event payload
+const newDiscussion = {
+  DiscussionTitle: discussionPayload.discussion.title,
+  Labels: discussionPayload.discussion.labels.map(label => label.name),
+  DiscussionBody: discussionPayload.discussion.body
+};
 
 // Generate prompt JSON based on discussion
 const promptJson = {
-  DiscussionTitle: discussionTitle,
-  Labels: discussionLabels,
-  DiscussionBody: discussionBody
+  DiscussionTitle: newDiscussion.DiscussionTitle,
+  Labels: newDiscussion.Labels,
+  DiscussionBody: newDiscussion.DiscussionBody
 };
 
 // Serialize promptJson to JSON format
@@ -28,6 +26,9 @@ const promptJsonString = JSON.stringify(promptJson, null, 2);
 
 // Write promptJson to a file named prompt.json
 fs.writeFileSync('prompt.json', promptJsonString);
+
+// Log the contents of prompt.json
+console.log('Contents of prompt.json:\n', promptJsonString);
 
 // Validate against the schema
 const validationResult = jsonschema.validate(promptJson, schema);
