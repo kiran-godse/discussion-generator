@@ -2,7 +2,7 @@ const fs = require('fs');
 const jsonschema = require('jsonschema');
 
 // Load your predefined schema
-const schema = require('./schema.json');
+const schema = require('./schema.json'); 
 
 // Simulate discussion creation
 const newDiscussion = {
