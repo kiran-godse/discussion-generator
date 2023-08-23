@@ -4,18 +4,20 @@ const jsonschema = require('jsonschema');
 // Load your predefined schema
 const schema = require('./schema.json'); 
 
-// Simulate discussion creation
-const newDiscussion = {
-  DiscussionTitle: "Sample Discussion",
-  Labels: ["Label1", "Label2"],
-  DiscussionBody: "This is a sample discussion about generating prompt JSON."
-};
+// Load discussion data from the GitHub Actions context
+const eventPath = process.argv[2];
+const discussionPayload = require(eventPath);
+
+// Extract discussion data from the payload
+const discussionTitle = discussionPayload.discussion.title;
+const discussionBody = discussionPayload.discussion.body;
+const discussionLabels = discussionPayload.discussion.labels.map(label => label.name);
 
 // Generate prompt JSON based on discussion
 const promptJson = {
-  DiscussionTitle: newDiscussion.DiscussionTitle,
-  Labels: newDiscussion.Labels,
-  DiscussionBody: newDiscussion.DiscussionBody
+  DiscussionTitle: discussionTitle,
+  Labels: discussionLabels,
+  DiscussionBody: discussionBody
 };
 
 // Serialize promptJson to JSON format
