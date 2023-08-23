@@ -16,6 +16,11 @@ const discussionTitle = discussionPayload.discussion.title;
 const discussionBody = discussionPayload.discussion.body;
 const discussionLabels = discussionPayload.discussion.labels ? discussionPayload.discussion.labels.map(label => label.name) : [];
 
+// Debug: Print the extracted discussion data
+console.log('Discussion Title:', discussionTitle);
+console.log('Discussion Body:', discussionBody);
+console.log('Discussion Labels:', discussionLabels);
+
 // Generate prompt JSON based on discussion
 const promptJson = {
   DiscussionTitle: discussionTitle,
