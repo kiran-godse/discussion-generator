@@ -8,11 +8,13 @@ const schema = require('./schema.json');
 const eventPath = process.argv[2];
 const discussionPayload = require(eventPath);
 
+// Debug: Print the event payload
+console.log('Event Payload:', discussionPayload);
+
 // Extract discussion data from the payload
 const discussionTitle = discussionPayload.discussion.title;
 const discussionBody = discussionPayload.discussion.body;
 const discussionLabels = discussionPayload.discussion.labels ? discussionPayload.discussion.labels.map(label => label.name) : [];
-
 
 // Generate prompt JSON based on discussion
 const promptJson = {
@@ -21,15 +23,14 @@ const promptJson = {
   DiscussionBody: discussionBody
 };
 
+// Debug: Print the contents of prompt.json
+console.log('Contents of prompt.json:\n', JSON.stringify(promptJson, null, 2));
+
 // Serialize promptJson to JSON format
 const promptJsonString = JSON.stringify(promptJson, null, 2);
 
 // Write promptJson to a file named prompt.json
 fs.writeFileSync('prompt.json', promptJsonString);
-
-// Read and print the contents of prompt.json
-const promptJsonContents = fs.readFileSync('prompt.json', 'utf8');
-console.log('Contents of prompt.json:\n', promptJsonContents);
 
 // Validate against the schema
 const validationResult = jsonschema.validate(promptJson, schema);
