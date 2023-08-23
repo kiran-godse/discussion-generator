@@ -13,6 +13,7 @@ const discussionTitle = discussionPayload.discussion.title;
 const discussionBody = discussionPayload.discussion.body;
 const discussionLabels = discussionPayload.discussion.labels ? discussionPayload.discussion.labels.map(label => label.name) : [];
 
+
 // Generate prompt JSON based on discussion
 const promptJson = {
   DiscussionTitle: discussionTitle,
