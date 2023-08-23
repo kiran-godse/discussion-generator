@@ -6,40 +6,20 @@ on:
       - created
 
 jobs:
-  update-discussion:
-    if: >-
-      github.event.discussion.category.name == 'Blurb'
+  generate-prompt:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Get discussion information
-        id: discussion-info
-        run: |
-          echo "comment_body=$(echo '${{ toJson(github.event) }}' | jq '.comment.body')" >> $GITHUB_OUTPUT
-          echo "disc_number=$(echo '${{ toJson(github.event) }}' | jq '.discussion.number')" >> $GITHUB_OUTPUT
-          echo "disc_ID=$(echo '${{ toJson(github.event) }}' | jq '.discussion.node_id')" >> $GITHUB_OUTPUT
-          echo "disc_body=$(echo '${{ toJson(github.event) }}' | jq '.discussion.body')" >> $GITHUB_OUTPUT
-      
-      - name: Create a new prompt
-        id: prompt_creation
-        uses: ./actions/gptworkflow/gptprompttemplate
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          blurb_body: ${{ steps.discussion-info.outputs.disc_body}}
-          comment_body: ${{ steps.discussion-info.outputs.comment_body}}
-      
-      - name: Use Chatgpt Api
-        id: chatgpt
-        uses: ./actions/gptworkflow/gptapi
-        with:
-          api_key: ${{ secrets.API_KEY }}
-          prompt: ${{ steps.prompt_creation.outputs.Newprompt}}
-
-      - name: Update Blurb Discussion
-        id: update_Blurb
-        uses: ./actions/commentworkflow/blurbdiscussion
-        with:
-          PAT:  ${{ secrets.GITHUB_TOKEN }}
-          updatedbody: ${{ steps.chatgpt.outputs.body }}
-          discussionId: ${{ steps.discussion-info.outputs.disc_ID}}  
+          node-version: '14'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Run script
+        run: node index.js
