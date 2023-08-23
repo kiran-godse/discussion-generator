@@ -23,3 +23,7 @@ jobs:
         
       - name: Generate prompt.json and validate
         run: node generate-validate.js
+        
+      - name: List files in working directory
+        run: ls -R
+
