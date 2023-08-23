@@ -20,3 +20,4 @@
   },
   "required": ["DiscussionTitle", "Labels", "DiscussionBody"]
 }
+
