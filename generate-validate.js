@@ -8,6 +8,9 @@ const schema = require('./schema.json');
 const eventPath = process.argv[2];
 const discussionPayload = require(eventPath);
 
+// Debug: Print the event payload
+console.log('Event Payload:', discussionPayload);
+
 // Extract discussion data from the payload
 const discussionTitle = discussionPayload.discussion.title;
 const discussionBody = discussionPayload.discussion.body;
