@@ -1,7 +1,7 @@
 name: Update Discussion on Comment
 
 on:
-  discussion_comment:
+  discussion:
     types:
       - created
 
