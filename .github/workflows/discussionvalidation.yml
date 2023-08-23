@@ -22,8 +22,4 @@ jobs:
         run: npm install
         
       - name: Generate prompt.json and validate
-        run: node generate-validate.js
-        
-      - name: List files in working directory
-        run: ls -R
-
+        run: node generate-validate.js "${{ github.event_path }}"
