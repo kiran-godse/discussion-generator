@@ -1,4 +1,4 @@
-name: Generate and Validate Prompt
+name: Discussion Validation
 
 on:
   discussion:
@@ -6,23 +6,22 @@ on:
       - created
 
 jobs:
-  generate-validate:
+  validate-discussion:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
 
-      - name: Install dependencies
-        run: npm install jsonschema
+    - name: Install Dependencies
+      run: npm install
 
-      - name: Generate and Validate Prompt JSON
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          EVENT_PAYLOAD_PATH: ${{ github.event_path }}
-        run: node .github/scripts/generate-validate-prompt.js $EVENT_PAYLOAD_PATH
+    - name: Run Discussion Validation
+      run: node your-action-script.js
+      env:
+        PAT: ${{ secrets.GITHUB_TOKEN  }}
