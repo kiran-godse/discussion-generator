@@ -2,29 +2,41 @@ const fs = require('fs');
 const jsonschema = require('jsonschema');
 
 // Load your predefined schema
-const schema = require('./schema.json'); 
+const schema = require('./schema.json');
 
 // Load discussion data from the GitHub Actions context
 const eventPath = process.argv[2];
 const discussionPayload = require(eventPath);
 
-// Debug: Print the event payload
-console.log('Event Payload:', discussionPayload);
-
 // Extract discussion data from the payload
 const discussionTitle = discussionPayload.discussion.title;
 const discussionBody = discussionPayload.discussion.body;
-const discussionLabels = discussionPayload.discussion.labels ? discussionPayload.discussion.labels.map(label => label.name) : [];
 
-// Construct the prompt JSON directly
+// Parse discussion body to extract title, labels, and content
+const discussionLines = discussionBody.split('\n');
+let discussionLabels = [];
+let discussionContent = '';
+let isLabelsSection = false;
+for (const line of discussionLines) {
+  if (line.startsWith('### Labels:')) {
+    isLabelsSection = true;
+  } else if (isLabelsSection) {
+    discussionLabels = line.trim().split(', ');
+    isLabelsSection = false;
+  } else {
+    discussionContent += line + '\n';
+  }
+}
+
+// Generate prompt JSON based on extracted data
 const promptJson = {
   Title: discussionTitle,
   Labels: discussionLabels,
-  Body: discussionBody
+  Body: discussionContent.trim()
 };
 
-// Debug: Print the constructed prompt JSON
-console.log('Constructed prompt JSON:\n', JSON.stringify(promptJson, null, 2));
+// Debug: Print the extracted data
+console.log('Extracted Data:', promptJson);
 
 // Serialize promptJson to JSON format
 const promptJsonString = JSON.stringify(promptJson, null, 2);
