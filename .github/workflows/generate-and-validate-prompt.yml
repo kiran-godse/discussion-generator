@@ -22,6 +22,6 @@ jobs:
       run: npm install
 
     - name: Run Discussion Validation
-      run: node index.js
+      run: node your-action-script.js
       env:
-        PAT: ${{ secrets.GITHUB_TOKEN  }}
+        PAT: ${{ secrets.GITHUB_TOKEN }}
