@@ -1,43 +1,52 @@
-const fs = require('fs');
-const jsonschema = require('jsonschema');
+const core = require("@actions/core");
+const github = require("@actions/github");
+const Ajv = require("ajv");
 
-// Sample schema for validation
-const schema = {
-  type: 'object',
-  properties: {
-    discussionTitle: { type: 'string' },
-    discussionLabels: { type: 'array', items: { type: 'string' } },
-    discussionBody: { type: 'string' }
-  },
-  required: ['discussionTitle', 'discussionLabels', 'discussionBody']
-};
+const ajv = new Ajv();
+const schema = require("./prompt.json");
 
-// Simulating discussion creation
-const newDiscussion = {
-  title: "Sample Discussion",
-  labels: ["feature", "bug"],
-  body: "This is a sample discussion about generating prompt JSON."
-};
+try {
+  const discussionNum = github.context.payload.discussion.number;
+  const discussionNodeId = github.context.payload.discussion.node_id;
+  const discussionBody = github.context.payload.discussion.body;
 
-// Generate prompt JSON based on discussion
-const promptJson = {
-  discussionTitle: newDiscussion.title,
-  discussionLabels: newDiscussion.labels,
-  discussionBody: newDiscussion.body
-};
+  const query = `
+    query {
+      repository(owner: "${github.context.repo.owner}", name: "${github.context.repo.repo}") {
+        discussion(number: ${discussionNum}) {
+          title
+          body
+          labels(first: 10) {
+            nodes {
+              name
+            }
+          }
+        }
+      }
+    }
+  `;
 
-// Serialize promptJson to JSON format
-const promptJsonString = JSON.stringify(promptJson, null, 2);
+  const octokit = github.getOctokit(core.getInput("PAT"));
 
-// Write promptJson to a file named prompt.json
-fs.writeFileSync('prompt.json', promptJsonString);
+  octokit.graphql(query).then((response) => {
+    const discussion = response.repository.discussion;
+    const discussionLabels = discussion.labels.nodes.map((node) => node.name);
 
-// Validate against the schema
-const validationResult = jsonschema.validate(promptJson, schema);
+    const isValid = ajv.validate(schema, {
+      Title: discussion.title,
+      Labels: discussionLabels,
+      Body: discussion.body
+    });
 
-if (validationResult.valid) {
-  console.log('Generated prompt JSON is valid.');
-} else {
-  console.log('Generated prompt JSON is invalid.');
-  console.log('Validation errors:', validationResult.errors);
+    if (!isValid) {
+      const validationErrors = ajv.errorsText();
+      throw new Error(`Discussion data is not valid: ${validationErrors}`);
+    }
+
+    core.setOutput("disc_ID", discussionNodeId);
+    core.setOutput("disc_body", discussionBody);
+    core.setOutput("disc_labels", discussionLabels.join(", "));
+  });
+} catch (error) {
+  core.setFailed(error.message);
 }
