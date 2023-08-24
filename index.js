@@ -3,7 +3,7 @@ const github = require("@actions/github");
 const Ajv = require("ajv");
 
 const ajv = new Ajv();
-const schema = require("./prompt.json");
+const schema = require("./schema.json");
 
 try {
   const discussionNum = github.context.payload.discussion.number;
