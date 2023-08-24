@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "ajv": "^8.12.0",
     "fs": "^0.0.1-security",
     "jsonschema": "^1.4.1"
   }
