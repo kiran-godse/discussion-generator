@@ -12,9 +12,9 @@ const discussionPayload = require(eventPath);
 //console.log('Event Payload:', discussionPayload);
 
 // Extract discussion data from the payload
-const discussionTitle = discussionPayload.discussion.title;
-const discussionBody = discussionPayload.discussion.body;
-const discussionLabels = discussionPayload.discussion.labels ? discussionPayload.discussion.labels.map(label => label.name) : [];
+const Title = discussionPayload.discussion.title;
+const Body = discussionPayload.discussion.body;
+const Labels = discussionPayload.discussion.labels ? discussionPayload.discussion.labels.map(label => label.name) : [];
 
 
 // console.log('Discussion Title:', discussionTitle);
@@ -23,9 +23,9 @@ const discussionLabels = discussionPayload.discussion.labels ? discussionPayload
 
 
 const promptJson = {
-  DiscussionTitle: discussionTitle,
-  Labels: discussionLabels,
-  DiscussionBody: discussionBody
+  Title: Title,
+  Labels: Labels,
+  Body: Body
 };
 
 // Debug: Print the contents of prompt.json
