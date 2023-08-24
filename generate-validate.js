@@ -27,6 +27,11 @@ for (const line of discussionLines) {
     discussionContent += line + '\n';
   }
 }
+console.log('Extracted Data:', {
+  Title: discussionTitle,
+  Labels: discussionLabels,
+  Body: discussionBody
+});
 
 // Generate prompt JSON based on extracted data
 const promptJson = {
