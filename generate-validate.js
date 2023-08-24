@@ -2,7 +2,7 @@ const fs = require('fs');
 const jsonschema = require('jsonschema');
 
 // Load your predefined schema
-const schema = require('./schema.json');
+const schema = require('./schema.json'); 
 
 // Load discussion data from the GitHub Actions context
 const eventPath = process.argv[2];
@@ -11,37 +11,17 @@ const discussionPayload = require(eventPath);
 // Extract discussion data from the payload
 const discussionTitle = discussionPayload.discussion.title;
 const discussionBody = discussionPayload.discussion.body;
+const { labels: discussionLabels } = extractLabelsFromDiscussionBody(discussionBody);
 
-// Parse discussion body to extract title, labels, and content
-const discussionLines = discussionBody.split('\n');
-let discussionLabels = [];
-let discussionContent = '';
-let isLabelsSection = false;
-for (const line of discussionLines) {
-  if (line.startsWith('### Labels:')) {
-    isLabelsSection = true;
-  } else if (isLabelsSection) {
-    discussionLabels = line.trim().split(', ');
-    isLabelsSection = false;
-  } else {
-    discussionContent += line + '\n';
-  }
-}
-console.log('Extracted Data:', {
-  Title: discussionTitle,
-  Labels: discussionLabels,
-  Body: discussionBody
-});
-
-// Generate prompt JSON based on extracted data
+// Generate prompt JSON based on discussion
 const promptJson = {
-  Title: discussionTitle,
+  DiscussionTitle: discussionTitle,
   Labels: discussionLabels,
-  Body: discussionContent.trim()
+  DiscussionBody: discussionBody
 };
 
-// Debug: Print the extracted data
-console.log('Extracted Data:', promptJson);
+// Debug: Print the contents of prompt.json
+console.log('Contents of prompt.json:\n', JSON.stringify(promptJson, null, 2));
 
 // Serialize promptJson to JSON format
 const promptJsonString = JSON.stringify(promptJson, null, 2);
@@ -57,4 +37,16 @@ if (validationResult.valid) {
 } else {
   console.log('Generated prompt JSON is invalid.');
   console.log('Validation errors:', validationResult.errors);
+}
+
+// Function to extract labels from discussion body
+function extractLabelsFromDiscussionBody(body) {
+  const labelsRegex = /labels:\s*((?:[\w\s-]+,?\s*)+)/i;
+  const match = body.match(labelsRegex);
+  if (match && match[1]) {
+    const labelsString = match[1];
+    const labelsArray = labelsString.split(',').map(label => label.trim());
+    return { labels: labelsArray };
+  }
+  return { labels: [] };
 }
