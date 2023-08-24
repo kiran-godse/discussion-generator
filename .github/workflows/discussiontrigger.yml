@@ -1,27 +1,23 @@
-name: Discussion Validation
+name: Discussion on Comment
 
 on:
   discussion:
     types:
-      - created
-
+      - created 
+      
 jobs:
-  validate-discussion:
+  triage:
+    if: >-
+      github.event.discussion.category.name == 'General'
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-
-    - name: Install Dependencies
-      run: npm install
-
-    - name: Run Validation Script
-      run: node index.js
-      env:
-        PAT: ${{ secrets.GITHUB_TOKEN }}  
+      - name: Get discussion information
+        id: discussion-info
+        uses: Swapnil-Devops/rest-api-demo@main
+        with:
+          PAT: ${{ secrets.GITHUB_TOKEN }}
+      - name: verify Labels
+        run: echo "${{ steps.discussion-info.outputs.disc_labels}}" 
