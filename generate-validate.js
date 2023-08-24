@@ -50,3 +50,4 @@ function extractLabelsFromDiscussionBody(body) {
   }
   return { labels: [] };
 }
+
