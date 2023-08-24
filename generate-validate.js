@@ -17,9 +17,9 @@ const discussionBody = discussionPayload.discussion.body;
 const discussionLabels = discussionPayload.discussion.labels ? discussionPayload.discussion.labels.map(label => label.name) : [];
 
 
-console.log('Discussion Title:', discussionTitle);
-console.log('Discussion Body:', discussionBody);
-console.log('Discussion Labels:', discussionLabels);
+// console.log('Discussion Title:', discussionTitle);
+// console.log('Discussion Body:', discussionBody);
+// console.log('Discussion Labels:', discussionLabels);
 
 
 const promptJson = {
