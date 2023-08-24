@@ -32,6 +32,7 @@ try {
     const discussion = response.repository.discussion;
     const discussionLabels = discussion.labels.nodes.map((node) => node.name);
 
+    // Validation Step
     const isValid = ajv.validate(schema, {
       Title: discussion.title,
       Labels: discussionLabels,
