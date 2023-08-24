@@ -2,6 +2,8 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const Ajv = require("ajv");
 
+console.log('PAT:', process.env.PAT); // Add this line
+
 const ajv = new Ajv();
 const schema = require("./schema.json");
 
