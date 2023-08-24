@@ -1,35 +1,30 @@
 const fs = require('fs');
 const jsonschema = require('jsonschema');
 
-
+// Load your predefined schema
 const schema = require('./schema.json'); 
 
-
+// Load discussion data from the GitHub Actions context
 const eventPath = process.argv[2];
 const discussionPayload = require(eventPath);
 
 // Debug: Print the event payload
-//console.log('Event Payload:', discussionPayload);
+console.log('Event Payload:', discussionPayload);
 
 // Extract discussion data from the payload
-const Title = discussionPayload.discussion.title;
-const Body = discussionPayload.discussion.body;
-const Labels = discussionPayload.discussion.labels ? discussionPayload.discussion.labels.map(label => label.name) : [];
+const discussionTitle = discussionPayload.discussion.title;
+const discussionBody = discussionPayload.discussion.body;
+const discussionLabels = discussionPayload.discussion.labels ? discussionPayload.discussion.labels.map(label => label.name) : [];
 
-
-// console.log('Discussion Title:', discussionTitle);
-// console.log('Discussion Body:', discussionBody);
-// console.log('Discussion Labels:', discussionLabels);
-
-
+// Construct the prompt JSON directly
 const promptJson = {
-  Title: Title,
-  Labels: Labels,
-  Body: Body
+  Title: discussionTitle,
+  Labels: discussionLabels,
+  Body: discussionBody
 };
 
-// Debug: Print the contents of prompt.json
-console.log('Contents of prompt.json:\n', JSON.stringify(promptJson, null, 2));
+// Debug: Print the constructed prompt JSON
+console.log('Constructed prompt JSON:\n', JSON.stringify(promptJson, null, 2));
 
 // Serialize promptJson to JSON format
 const promptJsonString = JSON.stringify(promptJson, null, 2);
