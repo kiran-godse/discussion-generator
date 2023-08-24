@@ -2,16 +2,12 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const Ajv = require("ajv");
 
-console.log('PAT:', process.env.PAT);
-
-
 const ajv = new Ajv();
 const schema = require("./schema.json");
 
 try {
-  const discussionNum = github.context.payload.discussion.number;
-  const discussionNodeId = github.context.payload.discussion.node_id;
-  const discussionBody = github.context.payload.discussion.body;
+const Title = discussionPayload.discussion.title;
+const Body = discussionPayload.discussion.body;
 
   const query = `
     query {
@@ -42,14 +38,14 @@ try {
       Body: discussion.body
     });
 
-    if (!isValid) {
-      const validationErrors = ajv.errorsText();
-      throw new Error(`Discussion data is not valid: ${validationErrors}`);
-    }
-
-    core.setOutput("disc_ID", discussionNodeId);
-    core.setOutput("disc_body", discussionBody);
-    core.setOutput("disc_labels", discussionLabels.join(", "));
+    // Validate against the schema
+const validationResult = jsonschema.validate(promptJson, schema);
+if (validationResult.valid) {
+  console.log('Generated prompt JSON is valid.');
+} else {
+  console.log('Generated prompt JSON is invalid.');
+  console.log('Validation errors:', validationResult.errors);
+}
   });
 } catch (error) {
   core.setFailed(error.message);
