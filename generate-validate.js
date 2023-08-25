@@ -13,7 +13,7 @@ const Labels = discussionPayload.discussion.labels ? discussionPayload.discussio
 
 
 // console.log('Discussion Title:', discussionTitle);
-	@@ -23,9 +23,9 @@ const discussionLabels = discussionPayload.discussion.labels ? discussionPayload
+const discussionLabels = discussionPayload.discussion.labels ? discussionPayload
 
 
 const promptJson = {
