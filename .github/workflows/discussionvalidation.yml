@@ -1,4 +1,4 @@
-name: Discussion Validation
+name: Discussion Validation Prompt with Scheema Prompt
 
 on:
   discussion:
